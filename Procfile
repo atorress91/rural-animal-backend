@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT -jar build/libs/rural-animal-backend-api-1.0.0.jar
