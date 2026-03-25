@@ -62,3 +62,6 @@ build/resources/
 # Environment and config files (customize as needed)
 .env
 
+# JMeter generated results and reports
+jmeter-tests/html-report/
+jmeter-tests/results/
