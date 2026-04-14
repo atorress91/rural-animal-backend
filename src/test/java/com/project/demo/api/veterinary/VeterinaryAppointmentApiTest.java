@@ -14,10 +14,7 @@ import com.project.demo.logic.utils.EmailService;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -54,6 +51,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DisplayName("API VeterinaryAppointments - Pruebas funcionales REST Assured")
+@Tag("api")
 class VeterinaryAppointmentApiTest {
 
     @LocalServerPort
@@ -105,9 +103,9 @@ class VeterinaryAppointmentApiTest {
         testUser = new TblUser();
         testUser.setName("Ana");
         testUser.setLastName1("Mora");
-        testUser.setEmail("ana.vet.test@ruraltest.com");
+        testUser.setEmail("ana.vet.test"+System.nanoTime()+"@ruraltest.com");
         testUser.setPassword(passwordEncoder.encode("Test123!"));
-        testUser.setIdentification("112345678");
+        testUser.setIdentification("112345678"+System.nanoTime());
         testUser.setPhoneNumber("88001122");
         testUser.setBirthDate(LocalDate.of(1995, 6, 15));
         testUser.setRole(buyerRole);
@@ -117,9 +115,9 @@ class VeterinaryAppointmentApiTest {
         adminUser = new TblUser();
         adminUser.setName("Admin");
         adminUser.setLastName1("Vet");
-        adminUser.setEmail("admin.vet.test@ruraltest.com");
+        adminUser.setEmail("admin.vet.test"+System.nanoTime()+"@ruraltest.com");
         adminUser.setPassword(passwordEncoder.encode("Test123!"));
-        adminUser.setIdentification("212345678");
+        adminUser.setIdentification("212345678"+System.nanoTime());
         adminUser.setPhoneNumber("88002233");
         adminUser.setBirthDate(LocalDate.of(1985, 1, 1));
         adminUser.setRole(adminRole);
@@ -129,10 +127,7 @@ class VeterinaryAppointmentApiTest {
         appointmentDto = new VeterinaryAppointmentDto();
     }
 
-    @AfterEach
-    void tearDown() {
-        userRepository.deleteAll();
-    }
+
 
     // =========================================================================
     // Escenarios POSITIVOS

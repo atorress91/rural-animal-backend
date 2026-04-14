@@ -11,10 +11,7 @@ import com.project.demo.logic.utils.EmailService;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,6 +35,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DisplayName("API Users - Pruebas funcionales REST Assured")
+@Tag("api")
 class UserApiTest {
 
     @LocalServerPort
@@ -76,20 +74,16 @@ class UserApiTest {
         testUser = new TblUser();
         testUser.setName("Carlos");
         testUser.setLastName1("Rodriguez");
-        testUser.setEmail("carlos.user.test@ruraltest.com");
+        testUser.setEmail("carlos.user.test"+ System.nanoTime() + "@ruraltest.com");
         testUser.setPassword(passwordEncoder.encode("Test123!"));
-        testUser.setIdentification("112345678");
+        testUser.setIdentification("112345678" + System.nanoTime());
         testUser.setPhoneNumber("88001122");
         testUser.setBirthDate(LocalDate.of(1995, 3, 20));
         testUser.setRole(buyerRole);
         testUser = userRepository.save(testUser);
     }
 
-    @AfterEach
-    void tearDown() {
-        userRepository.deleteAll();
-        directionRepository.deleteAll();
-    }
+
 
     // =========================================================================
     // Escenarios POSITIVOS
@@ -230,12 +224,28 @@ class UserApiTest {
     @Description("TC-USER-08: POST /users con email ya registrado debe retornar 409")
     @DisplayName("TC-USER-08: POST /users con email duplicado retorna 409")
     void addUser_withDuplicateEmail_returns409() {
+        String payload = """
+    {
+      "name": "Nuevo",
+      "lastName1": "Usuario",
+      "lastName2": "Prueba",
+      "email": "%s",
+      "password": "Test123!",
+      "identification": "%s",
+      "phoneNumber": "88001122",
+      "birthDate": "2000-05-10"
+    }
+    """.formatted(
+                testUser.getEmail(),
+                "112345" + System.nanoTime()
+        );
+
         given()
-            .contentType("application/json")
-            .body(UserTestData.duplicateEmailPayload())
-        .when()
-            .post("/users")
-        .then()
-            .statusCode(HttpStatus.CONFLICT.value());
+                .contentType("application/json")
+                .body(payload)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value());
     }
 }

@@ -14,10 +14,7 @@ import com.project.demo.logic.entity.user.UserRepository;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -34,6 +31,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DisplayName("API Publications - Pruebas funcionales REST Assured")
+@Tag("api")
 class PublicationApiTest {
 
     @LocalServerPort
@@ -86,9 +84,9 @@ class PublicationApiTest {
         sellerUser = new TblUser();
         sellerUser.setName("Seller");
         sellerUser.setLastName1("Publication");
-        sellerUser.setEmail("seller.pub.test@ruraltest.com");
+        sellerUser.setEmail("seller.pub.test"+System.nanoTime()+"@ruraltest.com");
         sellerUser.setPassword(passwordEncoder.encode("Test123!"));
-        sellerUser.setIdentification("112345678");
+        sellerUser.setIdentification("112345678"+System.nanoTime());
         sellerUser.setPhoneNumber("88001122");
         sellerUser.setBirthDate(LocalDate.of(1990, 1, 1));
         sellerUser.setRole(sellerRole);
@@ -98,9 +96,9 @@ class PublicationApiTest {
         adminUser = new TblUser();
         adminUser.setName("Admin");
         adminUser.setLastName1("Publication");
-        adminUser.setEmail("admin.pub.test@ruraltest.com");
+        adminUser.setEmail("admin.pub.test"+ System.nanoTime()+"@ruraltest.com");
         adminUser.setPassword(passwordEncoder.encode("Test123!"));
-        adminUser.setIdentification("212345678");
+        adminUser.setIdentification("212345678" + System.nanoTime());
         adminUser.setPhoneNumber("88003344");
         adminUser.setBirthDate(LocalDate.of(1988, 7, 20));
         adminUser.setRole(adminRole);
@@ -131,12 +129,7 @@ class PublicationApiTest {
         testPublication = publicationRepository.save(testPublication);
     }
 
-    @AfterEach
-    void tearDown() {
-        publicationRepository.deleteAll();
-        userRepository.deleteAll();
-        directionRepository.deleteAll();
-    }
+
 
     @Test
     @Story("Publicaciones - Ventas")
