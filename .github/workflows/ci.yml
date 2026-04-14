@@ -7,7 +7,7 @@ on:
     branches: [ "pipeline-test" ]
 
 jobs:
-  unit-test-and-coverage:
+  tests-coverage-and-sonarcloud:
     runs-on: ubuntu-latest
 
     services:
@@ -54,10 +54,7 @@ jobs:
       - name: Generar cobertura JaCoCo
         run: ./gradlew jacocoTestReport
 
-      - name: Subir reporte JaCoCo
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: |
-            build/reports/jacoco/test/jacocoTestReport.xml
-            build/reports/jacoco/test/html
+      - name: Ejecutar análisis en SonarCloud
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar

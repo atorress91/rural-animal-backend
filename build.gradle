@@ -160,8 +160,9 @@ tasks.named('apiTest') {
 
 sonar {
 	properties {
-		property "sonar.projectKey", "rural-animal-backend"
-		property "sonar.projectName", "rural-animal-backend"
+		property "sonar.projectKey", "atorress91_rural-animal-backend"
+		property "sonar.organization", "testing-cenfotec"
+		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.sources", "src/main/java"
 		property "sonar.tests", "src/test/java"
 		property "sonar.coverage.jacoco.xmlReportPaths",
