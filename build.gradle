@@ -129,13 +129,26 @@ jacocoTestReport {
 	}
 
 }
+// Usar esto
+//jacocoTestReport {
+//	dependsOn unitTest, apiTest
+//	executionData(unitTest, apiTest)
+//
+//
+//	reports {
+//		xml.required = true
+//		html.required = true
+//		csv.required = false
+//	}
+//
+//}
 
 
 
 tasks.named('unitTest') {
 	finalizedBy jacocoTestReport
 }
-
+//Descomentar
 //tasks.named('apiTest') {
 //	finalizedBy jacocoTestReport
 //}
