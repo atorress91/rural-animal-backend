@@ -1,11 +1,12 @@
-name: CI Quality Pipeline
+name: Backend CI Quality Gate
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "staging" ]
   pull_request:
-    branches: [ "pipeline-test" ]
-    types: [opened, synchronize, reopened]
+    branches: [ "main", "staging" ]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,8 +14,10 @@ permissions:
 
 jobs:
   build-test-and-analyze:
-    name: Build, test and analyze
+    name: Unit + API tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 
     services:
       mariadb:
@@ -43,13 +46,6 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - name: Cache Sonar packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
       - name: Dar permisos a gradlew
         run: chmod +x gradlew
 
@@ -67,7 +63,18 @@ jobs:
       - name: Generar reporte JaCoCo
         run: ./gradlew jacocoTestReport
 
+      - name: Subir reportes de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: |
+            build/reports/tests
+            build/reports/jacoco
+          retention-days: 14
+
       - name: Ejecutar analisis SonarCloud
+        if: github.ref == 'refs/heads/main'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonar --info
